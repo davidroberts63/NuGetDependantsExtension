@@ -18,7 +18,7 @@ function sendNugetQuery(nugetQuery)
 	xmlHttp.setRequestHeader('accept', 'application/json');
 
 	xmlHttp.onload = function() {
-		if(xmlHttp.staus == 200) { processResponse(); }
+		if(xmlHttp.status == 200) { processResponse(); }
 		else { reportProblem(); }
 	};
 	
