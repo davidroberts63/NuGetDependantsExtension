@@ -69,7 +69,7 @@ function getVersionHistoryElement()
 function generateHeading()
 {
 	var heading = document.createElement("h3");
-	heading.innerHTML = "Dependers";
+	heading.innerHTML = "Upstream Packages";
 	heading.id = "dependersSet";
 
 	return heading;	
