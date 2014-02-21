@@ -1,10 +1,12 @@
 {
 	"manifest_version": 2,
 	"name": "Nuget Upstream",
+	"description": "Shows a list of the upstream NuGet package dependencies. The list is shown just above the version history information.",
+
 	"version": "0.0.1",
 	"content_scripts":[
 	{
-		"matches": ["https://www.nuget.org/*"],
+		"matches": ["https://www.nuget.org/*","http://www.nuget.org/*"],
 		"js": ["myscript.js"]
 	}]
 }

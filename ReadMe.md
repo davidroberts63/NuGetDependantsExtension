@@ -8,8 +8,6 @@ The plugin is configured currently to only apply to https://www.nuget.org page r
 
 ### Known problems:
 
- * Some packages are being duplicated in the listing. I believe this is due to my use of async XMLHttpRequest calls.
  * As the list of dependants can be quite large at times (log4net for example) work needs to be done to allow for selective loading of additional package data.
  * The code has no tests (shame on me).
  * The code is likely not well organized. I'm used to other languages.
- * Naming is not consistent. Dependats vs Dependers. I'm moving toward 'Dependants' but it's late right now. (Thank you @nlindey and @jagthedrummer for the responses concerning the naming)
