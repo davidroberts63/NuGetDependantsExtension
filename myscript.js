@@ -42,11 +42,14 @@ function processResponse(request)
 	var nugetResponse = JSON.parse(request.responseText);
 
 	_dependerIds = getPackageIdsFromResponse(nugetResponse, _dependerIds);
-	addDependersToPage(_dependerIds);
 
 	if (nugetResponse.d.__next) 
 	{
 		sendNugetQuery(nugetResponse.d.__next);
+	}
+	else
+	{
+		addDependersToPage(_dependerIds);
 	}
 }
 
