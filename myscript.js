@@ -1,31 +1,34 @@
-var packageId = getPackageId();
-var versionHistory = getVersionHistoryElement();
+var _dependerIds = [];
 
-if (packageId)
+function start()
 {
-	var query = "https://www.nuget.org/api/v2/Packages()?$orderby=Id&$filter=substringof('{{PACKAGE_ID}}',Dependencies) and IsLatestVersion&$select=Id,Dependencies"
-	query = query.replace("{{PACKAGE_ID}}", packageId);
+	var packageId = getPackageId();
 	
-	var xmlHttp = new XMLHttpRequest();
-	var dependersIds = [];
-
-	sendNugetQuery(query);
+	if (packageId)
+	{
+		var query = "https://www.nuget.org/api/v2/Packages()?$orderby=Id&$filter=substringof('{{PACKAGE_ID}}',Dependencies) and IsLatestVersion&$select=Id,Dependencies"
+		query = query.replace("{{PACKAGE_ID}}", packageId);
+		
+		sendNugetQuery(query);
+	}
 }
+start();
 
 function sendNugetQuery(nugetQuery)
 {
-	xmlHttp.open( "GET", nugetQuery, true );
-	xmlHttp.setRequestHeader('accept', 'application/json');
+	var request = new XMLHttpRequest();
+	request.open( "GET", nugetQuery, true );
+	request.setRequestHeader("accept", "application/json");
 
-	xmlHttp.onload = function() {
-		if(xmlHttp.status == 200) { processResponse(); }
+	request.onload = function() {
+		if(request.status == 200) { processResponse(request); }
 		else { reportProblem(); }
 	};
 	
-	xmlHttp.send(null);
+	request.send(null);
 }
 
-function reportProblem(e)
+function reportProblem()
 {
 	var problem = document.createElement("p");
 	problem.id = "dependers";
@@ -34,14 +37,14 @@ function reportProblem(e)
 	insertDependers(problem);
 }
 
-function processResponse()
+function processResponse(request)
 {
-	var nugetResponse = JSON.parse(xmlHttp.responseText);
+	var nugetResponse = JSON.parse(request.responseText);
 
-	dependersIds = getPackageIdsFromResponse(nugetResponse, dependersIds);
-	addDependersToPage(dependersIds);
+	_dependerIds = getPackageIdsFromResponse(nugetResponse, _dependerIds);
+	addDependersToPage(_dependerIds);
 
-	if (nugetResponse.d.__next)
+	if (nugetResponse.d.__next) 
 	{
 		sendNugetQuery(nugetResponse.d.__next);
 	}
@@ -51,7 +54,8 @@ function getVersionHistoryElement()
 {
 	var headings = document.getElementsByTagName("h3");
 
-	for (var i = 0; i < headings.length; i++) {
+	for (var i = 0; i < headings.length; i++) 
+	{
 		if (headings[i].innerHTML == "Version History")
 		{
 			return headings[i];
@@ -68,9 +72,9 @@ function generateHeading()
 	return heading;	
 }
 
-function addDependersToPage(dependersIds)
+function addDependersToPage(_dependerIds)
 {
-	var dependers = generateDependers(dependersIds);
+	var dependers = generateDependers(_dependerIds);
 
 	insertDependers(dependers)
 }
@@ -94,13 +98,14 @@ function getPackageIdsFromResponse(nugetResponse, currentIds)
 
 function insertDependers(dependers)
 {
-	var packagePage = versionHistory.parentNode;
+	var nextElement = getVersionHistoryElement();
+	var packagePage = nextElement.parentNode;
 	var heading = generateHeading();
 
 	var existentHeading = document.getElementById(heading.id);
 	if(!existentHeading)
 	{
-		packagePage.insertBefore(heading, versionHistory);		
+		packagePage.insertBefore(heading, nextElement);		
 	}
 
 	var existentDependers = document.getElementById(dependers.id);
